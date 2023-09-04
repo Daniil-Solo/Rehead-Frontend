@@ -9,7 +9,7 @@
 .login-form__title{
     color: var(--dark-blue);
     text-align: center;
-    font-size: 36px;
+    font-size: 40px;
     font-weight: 400;
 }
 
@@ -54,7 +54,6 @@
 
 .login-form__submit{
     margin-top: 24px;
-    padding: 4px;
     width: 300px;
     align-self: center;
 }
@@ -64,14 +63,15 @@
 	box-sizing: border-box;
 	outline: none;
 	border: none;  
-    padding: 8px;
+    padding: 8px 32px;
 	border-radius: 12px;
+    background-color: white;
+    border: 3px solid var(--dark-blue);
 	font-family: inherit; 
     font-size: 28px;
-	font-weight: 600;
+	font-weight: 500;
 	text-decoration: none;
 	color: var(--dark-blue);
-	background-color: var(--light-blue);
 	cursor: pointer;
 	user-select: none;
 	appearance: none;
@@ -81,7 +81,8 @@
 	box-shadow: 0 0 0 2px var(--dark-grey);
 }
 .btn:hover {
-	background-color: var(--light-blue);
+	background-color: var(--dark-blue);
+    color: white;
 }
 .btn:active {
 	transform: scale(0.96);
@@ -100,8 +101,8 @@
     padding: 12px;
     outline: none;
     border: none;
-    border-radius: 8px;
-    box-shadow: 4px 4px 10px var(--light-blue);
+    border-radius: 12px;
+    background-color: var(--light-blue);
 }
 
 .input::placeholder{
