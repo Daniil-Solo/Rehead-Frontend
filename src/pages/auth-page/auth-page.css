@@ -1,19 +1,19 @@
 .auth-page{
     height: 100%;
-    background: no-repeat url(https://placehold.co/600x400);
-    background-size: cover;
     display: flex;
     flex-direction: row;
 }
 .auth-page__big_column{
+    background: no-repeat url(../images/image.jpg);
+    background-size: cover;
     width: 60%;
     height: 100%;
+    border-top-right-radius: 32px;
+    border-bottom-right-radius: 32px;
 }
 .auth-page__small_column{
     width: 40%;
     height: 100%;
-    border-top-left-radius: 16px;
-    border-bottom-left-radius: 16px;
 }
 .auth-background{
     background-color: white;
