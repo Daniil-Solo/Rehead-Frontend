@@ -6,7 +6,7 @@ export const LoginForm: React.FC = () => {
     return (
         <div className="login-form">
             <h2 className="login-form__title">Войдите</h2>
-            <h4 className="login-form__subtitle">чтобы получить доступ</h4>
+            <h4 className="login-form__subtitle">чтобы начать пользоваться</h4>
             <form className="login-form__form">
                 <p className="login-form__item form-input">
                     <input className="form-input__input input" type="text" placeholder="Логин" />

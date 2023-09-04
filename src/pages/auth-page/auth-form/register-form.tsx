@@ -5,7 +5,8 @@ import './auth-form.css';
 export const RegisterForm: React.FC = () => {
     return (
         <div className="login-form">
-            <h2 className="login-form__title">Регистрация</h2>
+            <h2 className="login-form__title">Создайте аккаунт</h2>
+            <h4 className="login-form__subtitle">чтобы получить доступ</h4>
             <form className="login-form__form">
                 <p className="login-form__item form-input">
                     <input className="form-input__input input" type="text" placeholder="Логин" />
