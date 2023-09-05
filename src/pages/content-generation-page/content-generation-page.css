@@ -34,9 +34,11 @@
     color: white;
     font-weight: 400;
 }
+.header__link:hover{
+    color: var(--light-grey);
+}
 .header__link.active{
     font-weight: 600;
-    color: white;
 }
 .header__exit-btn{
     margin-left: auto;
@@ -55,7 +57,7 @@
     color: currentColor;
 }
 .exit-btn:hover{
-    color: var(--pretty-blue);
+    color: var(--light-grey);
 }
 .exit-btn:active{
     color: var(--light-grey);
