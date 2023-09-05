@@ -5,12 +5,14 @@ import { AuthPage } from './pages/auth-page/auth-page';
 import { LoginForm } from './pages/auth-page/auth-form/login-form';
 import { RegisterForm } from './pages/auth-page/auth-form/register-form';
 import { PageNotFound } from './pages/page-not-found/page-not-found';
+import {ContentGenerationPage} from './pages/content-generation-page/content-generation-page'
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<AuthPage> <LoginForm/> </AuthPage>} />
       <Route path="/register" element={<AuthPage> <RegisterForm/> </AuthPage>} />
+      <Route path="/content" element={<ContentGenerationPage/>} />
       <Route path="*" element={<PageNotFound/>} />
     </Routes>
   );
