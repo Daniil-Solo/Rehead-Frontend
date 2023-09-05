@@ -1,5 +1,6 @@
 import React from "react";
 import {NavLink} from "react-router-dom"
+import Carousel from "nuka-carousel"
 import './content-generation-page.css';
 
 export const ContentGenerationPage: React.FC = () => {
@@ -58,16 +59,26 @@ export const ContentGenerationPage: React.FC = () => {
                     <h3 className="main__subtitle">
                         Результат генерации
                     </h3>
-                    <div className="content-generation-page__content content">
-                        <p className="content__text">
-                            Здесь будет сгенерированное описание...
-                        </p>
-                        <button className="content__copy-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM4.5 9a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 1 0-1h4a.5.5 0 0 1 0 1h-4z"/>
-                            </svg>
-                        </button>
+                    <div className="content-generation-page__result result">
+                        <div className="result__small-column content">
+                            <p className="content__text">
+                                Здесь будет сгенерированное описание...
+                            </p>
+                            <button className="content__copy-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM4.5 9a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 1 0-1h4a.5.5 0 0 1 0 1h-4z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="result__big-column carousel">
+                            <Carousel cellAlign="center">
+                                <div className="carousel__image-container">
+                                    <img className="carousel__image" src="https://placehold.co/1000x2000" />
+                                </div>
+                            </Carousel>
+                        </div>
                     </div>
+                    
                 </div>
             </main>
         </>
