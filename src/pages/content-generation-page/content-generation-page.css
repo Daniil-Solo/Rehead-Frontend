@@ -10,7 +10,7 @@
 .header__container{
     display: flex;
     flex-direction: row;
-    gap: 16px;
+    gap: 24px;
     align-items: baseline;
 }
 .main__container{
@@ -51,8 +51,11 @@
     color: white;
     cursor: pointer;
 }
-.exit-btn:hover .exit-btn__text{
-    font-weight: 600;
+.exit-btn__text{
+    color: currentColor;
+}
+.exit-btn:hover{
+    color: var(--pretty-blue);
 }
 .exit-btn:active{
     color: var(--light-grey);
@@ -164,11 +167,12 @@
 }
 .btn-2{
     font-size: 20px;
-    border-color: var(--pretty-blue);
-    color: var(--pretty-blue);
+    border-color: var(--dark-blue);
+    background-color: var(--dark-blue);
+    color: white;
 }
 .btn-2:hover{
-    background-color: var(--pretty-blue);
+    background-color: var(--dark-blue);
 }
 .main__generate-btn{
     margin-top: 32px;
