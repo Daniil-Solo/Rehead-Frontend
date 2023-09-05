@@ -142,30 +142,38 @@
     flex-direction: row;
     gap: 12px;
 }
-.property__name{
-    width: 45%;
-    font-size: 24px;
+.property{
+    position: relative;
+    align-items: stretch;
 }
-.property__value{
-    width: 45%;
-    font-size: 24px;
+.property__text{
+    box-sizing: border-box;
+    width: 100%;
+    font-size: 28px;
+    padding: 16px 36px 16px 16px;
+    background-color: var(--light-blue);
+    border: none;
+    outline: none;
+    border-radius: 16px;
+    resize: none;
+    color: var(--dark-blue);
+    height: 100%;
 }
-.property__btn{
+.property__text::placeholder{
+    font-size: 24px;
+    color: var(--dark-grey);
+}
+.property__remove-btn{
     background-color: rgba(0,0,0,0);
     border: none;
     color: var(--dark-blue);
     cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 12px;
 }
-
-.property__btn:hover{
+.property__remove-btn:hover{
     color: var(--pretty-blue);
-}
-.property__btn:active{
-    color: var(--light-blue);
-}
-.properties__add-btn{
-    margin-top: 16px;
-    font-size: 20px;
 }
 .btn-2{
     font-size: 20px;

@@ -35,20 +35,12 @@ export const ContentGenerationPage: React.FC = () => {
                                 Изменить фото
                             </button>
                         </div>
-                        <div className="product__properties_column properties">
-                            <div className="properties__list">
-                                <div className="properties__item property">
-                                    <input type="text" placeholder="Характеристика" className="property__name input" />
-                                    <input type="text" placeholder="Значение"  className="property__value input" />
-                                    <button className="property__btn">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                                            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708z"/>
-                                        </svg>
-                                    </button>
-                                </div>
-                            </div>
-                            <button className="properties__add-btn btn">
-                                Добавить
+                        <div className="product__properties_column property">
+                            <textarea placeholder="Введите здесь характеристики продукта" className="property__text"></textarea>
+                            <button className="property__remove-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                    <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 4.646L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 1 1 .708-.708z"/>
+                                </svg>
                             </button>
                         </div>
                     </div>
