@@ -93,7 +93,7 @@
 }
 
 .input{
-    color: var(--dark-blue);
+    color: var(--dark-text);
     font-family: inherit; 
     font-size: 32px; 
     font-weight: 400;
