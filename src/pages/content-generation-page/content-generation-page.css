@@ -140,6 +140,7 @@
     gap: 16px;
 }
 .photo__img{
+    min-height: 271px;
     border-radius: 16px;
 }
 .photo__btn{

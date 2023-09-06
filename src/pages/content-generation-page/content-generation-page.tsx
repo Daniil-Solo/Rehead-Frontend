@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import Carousel from "nuka-carousel";
 import { toast } from 'react-toastify';
 import {runGenerateContent} from './../../api/tasks'
+import { Loader } from "../../components/loader/loader";
 import './content-generation-page.css';
 
 export const ContentGenerationPage: React.FC = () => {
@@ -11,6 +12,7 @@ export const ContentGenerationPage: React.FC = () => {
     const [text, setText] = useState("");
     const [removeBackground, setRemoveBackground] = useState(false);
     const [generateBackground, setGenerateBackground] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) {
@@ -21,7 +23,6 @@ export const ContentGenerationPage: React.FC = () => {
         } catch(err){
             console.log(err);
         }
-        
     }
 
     const selectImage = () => {
@@ -31,24 +32,27 @@ export const ContentGenerationPage: React.FC = () => {
         fileInput.current.click()
     }
 
-    const isUploadedImage = () => {
-        if (fileInput.current === null || fileInput.current.files === null){
-            return;
-        }
-        return fileInput.current.files.length > 0;
-    }
-
     const startGeneration = async () => {
-        if (!isUploadedImage){
+        setIsLoading(true);
+        if (fileInput.current === null || fileInput.current.files === null || fileInput.current.files.length === 0){
+            setIsLoading(false);
             toast.warning("Пожалуйста загрузите изображение товара");
             return;
         }
-        if (fileInput.current === null || fileInput.current.files === null){
+        if (text === ""){
+            setIsLoading(false);
+            toast.warning("Пожалуйста заполните поле характеристик товара");
             return;
         }
         const file = fileInput.current?.files[0];
-        const task_id = await runGenerateContent(file, text, removeBackground, generateBackground);
-        console.log(task_id);
+        try{
+            const task_id = await runGenerateContent(file, text, removeBackground, generateBackground);
+            toast.success("Генерация началась. Пожалуйста подождите");
+        } catch(err){
+            if (err instanceof Error){
+                toast.error(err.message);
+            }
+        }
     }
 
     return (
@@ -81,7 +85,7 @@ export const ContentGenerationPage: React.FC = () => {
                             <img className="photo__img" src={imageSrc} alt="Изображение товара" />
                             <input style={{display: "none"}} type="file" accept="image/*" ref={fileInput} onChange={handleImage}/>
                             <button className="photo__btn btn" onClick={selectImage}>
-                                Изменить фото
+                                Загрузить изображение
                             </button>
                             <div className="photo__check check-item">
                                 <input type="checkbox" className="check-item__checkbox" id="remove-back-check" checked={removeBackground} onChange={(e) => setRemoveBackground(e.target.checked)}/>
@@ -93,7 +97,7 @@ export const ContentGenerationPage: React.FC = () => {
                             </div>
                         </div>
                         <div className="product__properties_column property">
-                            <textarea placeholder="Введите здесь характеристики продукта" className="property__text" value={text} onChange={(e) => setText(e.target.value)}></textarea>
+                            <textarea placeholder="Введите здесь характеристики товара" className="property__text" value={text} onChange={(e) => setText(e.target.value)}></textarea>
                             <button className="property__remove-btn" onClick={(_) => setText("")}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                                     <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
@@ -101,9 +105,17 @@ export const ContentGenerationPage: React.FC = () => {
                             </button>
                         </div>
                     </div>
-                    <button className="main__generate-btn btn btn-2" onClick={startGeneration}>
-                        Сгенерерировать
-                    </button>
+                    {
+                        isLoading
+                        ? (
+                            <div className="main__generate-btn" style={{width: "232px", display: "flex", justifyContent: "center"}}><Loader/></div>
+                        )
+                        : (
+                            <button className="main__generate-btn btn btn-2" onClick={startGeneration}>
+                                Сгенерерировать
+                            </button>
+                        )
+                    }
                     <h3 className="main__subtitle">
                         Результат генерации
                     </h3>
@@ -121,7 +133,7 @@ export const ContentGenerationPage: React.FC = () => {
                         <div className="result__big-column carousel">
                             <Carousel cellAlign="center">
                                 <div className="carousel__image-container">
-                                    <img className="carousel__image" src="https://placehold.co/1000x2000" />
+                                    <img className="carousel__image" src='images/placeholder.jpg' />
                                 </div>
                             </Carousel>
                         </div>
