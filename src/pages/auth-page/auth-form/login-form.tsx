@@ -1,9 +1,10 @@
-import React, {useEffect, useContext} from "react";
+import React, {useEffect, useContext, useState} from "react";
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from 'react-toastify';
 import AuthContext from "../../../auth/auth-provider";
 import { runLogin } from "../../../api/auth";
+import { Loader } from "../../../components/loader/loader";
 import './auth-form.css';
 
 export interface ILoginFields {
@@ -15,12 +16,14 @@ export const LoginForm: React.FC = () => {
     const {register, handleSubmit, formState: {errors}, setFocus} = useForm<ILoginFields>({mode: 'onChange'});
     const {signin} = useContext(AuthContext);
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         setFocus('login');
     }, [])
 
     const onSubmit: SubmitHandler<ILoginFields> = async (data) => {
+        setIsLoading(true);
         try{
             const accessToken = await runLogin(data.login, data.password);
             if (signin !== undefined){
@@ -33,6 +36,7 @@ export const LoginForm: React.FC = () => {
                 toast.error(err.message);
             }
         }
+        setIsLoading(false);
     }
 
     return (
@@ -56,9 +60,17 @@ export const LoginForm: React.FC = () => {
                     })}/>
                     <span className="form-input__error">{errors.password?.message}</span>
                 </p>
-                <button type="submit" className="login-form__submit btn">
-                    Войти
-                </button>
+                <div className="login-form__submit submit">
+                    {
+                        isLoading
+                        ? <Loader/>
+                        : (
+                            <button type="submit" className="submit__btn btn">
+                                Войти
+                            </button>
+                        )
+                    }
+                </div>
                 <p className="login-form__text">
                     <span>Нет аккаунта? </span>
                     <Link to="/register">Зарегистрироваться</Link>
