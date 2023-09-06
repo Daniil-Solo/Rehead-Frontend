@@ -59,6 +59,13 @@
     margin-top: 24px;
     width: 300px;
     align-self: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.submit__btn{
+    width: 100%;
 }
 
 .btn {
