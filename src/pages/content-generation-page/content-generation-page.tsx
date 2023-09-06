@@ -1,18 +1,27 @@
 import React, { useState, useRef } from "react";
-import { NavLink } from "react-router-dom"
-import Carousel from "nuka-carousel"
+import { NavLink } from "react-router-dom";
+import Carousel from "nuka-carousel";
+import { toast } from 'react-toastify';
+import {runGenerateContent} from './../../api/tasks'
 import './content-generation-page.css';
 
 export const ContentGenerationPage: React.FC = () => {
     const fileInput = useRef<HTMLInputElement>(null); 
     const [imageSrc, setImageSrc] = useState('images/placeholder.jpg');
+    const [text, setText] = useState("");
+    const [removeBackground, setRemoveBackground] = useState(false);
+    const [generateBackground, setGenerateBackground] = useState(false);
 
     const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) {
             return;
         }
-        console.log(e.target.files);
-        setImageSrc(URL.createObjectURL(e.target.files[0]))
+        try{
+            setImageSrc(URL.createObjectURL(e.target.files[0]));
+        } catch(err){
+            console.log(err);
+        }
+        
     }
 
     const selectImage = () => {
@@ -20,6 +29,26 @@ export const ContentGenerationPage: React.FC = () => {
             return;
         }
         fileInput.current.click()
+    }
+
+    const isUploadedImage = () => {
+        if (fileInput.current === null || fileInput.current.files === null){
+            return;
+        }
+        return fileInput.current.files.length > 0;
+    }
+
+    const startGeneration = async () => {
+        if (!isUploadedImage){
+            toast.warning("Пожалуйста загрузите изображение товара");
+            return;
+        }
+        if (fileInput.current === null || fileInput.current.files === null){
+            return;
+        }
+        const file = fileInput.current?.files[0];
+        const task_id = await runGenerateContent(file, text, removeBackground, generateBackground);
+        console.log(task_id);
     }
 
     return (
@@ -55,24 +84,24 @@ export const ContentGenerationPage: React.FC = () => {
                                 Изменить фото
                             </button>
                             <div className="photo__check check-item">
-                                <input type="checkbox" className="check-item__checkbox" id="remove-back-check"/>
+                                <input type="checkbox" className="check-item__checkbox" id="remove-back-check" checked={removeBackground} onChange={(e) => setRemoveBackground(e.target.checked)}/>
                                 <label className="check-item__label" htmlFor="remove-back-check">Удалить фон</label>
                             </div>
                             <div className="photo__check check-item">
-                                <input type="checkbox" className="check-item__checkbox" id="generate-back-check"/>
+                                <input type="checkbox" className="check-item__checkbox" id="generate-back-check" checked={generateBackground} onChange={(e) => setGenerateBackground(e.target.checked)}/>
                                 <label className="check-item__label" htmlFor="generate-back-check">Сгенерировать фон</label>
                             </div>
                         </div>
                         <div className="product__properties_column property">
-                            <textarea placeholder="Введите здесь характеристики продукта" className="property__text"></textarea>
-                            <button className="property__remove-btn">
+                            <textarea placeholder="Введите здесь характеристики продукта" className="property__text" value={text} onChange={(e) => setText(e.target.value)}></textarea>
+                            <button className="property__remove-btn" onClick={(_) => setText("")}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                                     <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
                                 </svg>
                             </button>
                         </div>
                     </div>
-                    <button className="main__generate-btn btn btn-2">
+                    <button className="main__generate-btn btn btn-2" onClick={startGeneration}>
                         Сгенерерировать
                     </button>
                     <h3 className="main__subtitle">
