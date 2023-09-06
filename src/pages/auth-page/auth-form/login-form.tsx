@@ -1,7 +1,7 @@
-import React, {useRef, useEffect, useContext} from "react";
-import {Link} from 'react-router-dom'
+import React, {useEffect, useContext} from "react";
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm, SubmitHandler } from "react-hook-form";
-import AuthContext from "../../../context/auth-provider";
+import AuthContext from "../../../auth/auth-provider";
 import { runLogin } from "../../../api/auth";
 import './auth-form.css';
 
@@ -12,7 +12,8 @@ export interface ILoginFields {
 
 export const LoginForm: React.FC = () => {
     const {register, handleSubmit, reset, formState: {errors}, setFocus} = useForm<ILoginFields>({mode: 'onChange'});
-    const {setAuth} = useContext(AuthContext);
+    const {signin} = useContext(AuthContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         setFocus('login');
@@ -21,8 +22,9 @@ export const LoginForm: React.FC = () => {
     const onSubmit: SubmitHandler<ILoginFields> = async (data) => {
         try{
             const accessToken = await runLogin(data.login, data.password);
-            if (setAuth !== undefined){
-                setAuth({accessToken: accessToken});
+            if (signin !== undefined){
+                signin(accessToken);
+                navigate("/");
             }
             reset();
         } catch (err){
@@ -41,7 +43,7 @@ export const LoginForm: React.FC = () => {
                     <input className="form-input__input input" type="text" placeholder="Email" {...register('login', {
                         required: "Email является обязательным",
                         pattern: {
-                            value:  /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
+                            value:  /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
                             message: "Пожалуйста введите корректный email"
                         }
                     })}/>
