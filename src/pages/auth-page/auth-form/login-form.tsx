@@ -1,6 +1,7 @@
 import React, {useEffect, useContext} from "react";
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm, SubmitHandler } from "react-hook-form";
+import { toast } from 'react-toastify';
 import AuthContext from "../../../auth/auth-provider";
 import { runLogin } from "../../../api/auth";
 import './auth-form.css';
@@ -11,7 +12,7 @@ export interface ILoginFields {
 }
 
 export const LoginForm: React.FC = () => {
-    const {register, handleSubmit, reset, formState: {errors}, setFocus} = useForm<ILoginFields>({mode: 'onChange'});
+    const {register, handleSubmit, formState: {errors}, setFocus} = useForm<ILoginFields>({mode: 'onChange'});
     const {signin} = useContext(AuthContext);
     const navigate = useNavigate();
 
@@ -23,13 +24,13 @@ export const LoginForm: React.FC = () => {
         try{
             const accessToken = await runLogin(data.login, data.password);
             if (signin !== undefined){
+                toast.success("Вход выполнен успешно");
                 signin(accessToken);
                 navigate("/");
             }
-            reset();
         } catch (err){
             if (err instanceof Error){
-                console.log(err.message)
+                toast.error(err.message);
             }
         }
     }
