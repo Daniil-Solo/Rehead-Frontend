@@ -1,9 +1,27 @@
-import React from "react";
-import {NavLink} from "react-router-dom"
+import React, { useState, useRef } from "react";
+import { NavLink } from "react-router-dom"
 import Carousel from "nuka-carousel"
 import './content-generation-page.css';
 
 export const ContentGenerationPage: React.FC = () => {
+    const fileInput = useRef<HTMLInputElement>(null); 
+    const [imageSrc, setImageSrc] = useState('images/placeholder.jpg');
+
+    const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) {
+            return;
+        }
+        console.log(e.target.files);
+        setImageSrc(URL.createObjectURL(e.target.files[0]))
+    }
+
+    const selectImage = () => {
+        if (fileInput.current === null){
+            return;
+        }
+        fileInput.current.click()
+    }
+
     return (
         <>
             <header className="header">
@@ -31,8 +49,9 @@ export const ContentGenerationPage: React.FC = () => {
                     </h2>
                     <div className="content-generation-page__product product">
                         <div className="product__photo_column photo">
-                            <img className="photo__img" src="https://placehold.co/600x400" alt="Изображение товара" />
-                            <button className="photo__btn btn">
+                            <img className="photo__img" src={imageSrc} alt="Изображение товара" />
+                            <input style={{display: "none"}} type="file" accept="image/*" ref={fileInput} onChange={handleImage}/>
+                            <button className="photo__btn btn" onClick={selectImage}>
                                 Изменить фото
                             </button>
                             <div className="photo__check check-item">
