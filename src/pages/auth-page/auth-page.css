@@ -4,7 +4,7 @@
     flex-direction: row;
 }
 .auth-page__big_column{
-    background: no-repeat url(../images/image.jpg);
+    background-repeat: no-repeat;
     background-size: cover;
     width: 60%;
     height: 100%;
