@@ -1,5 +1,5 @@
 import React from 'react';
-import {Routes, Route} from 'react-router-dom'
+import {Routes, Route, Navigate} from 'react-router-dom'
 import './App.css';
 import { AuthPage } from './pages/auth-page/auth-page';
 import { LoginForm } from './pages/auth-page/auth-form/login-form';
@@ -13,6 +13,7 @@ function App() {
       <Route path="/login" element={<AuthPage> <LoginForm/> </AuthPage>} />
       <Route path="/register" element={<AuthPage> <RegisterForm/> </AuthPage>} />
       <Route path="/content" element={<ContentGenerationPage/>} />
+      <Route path="/" element={<Navigate to="/login"/>} />
       <Route path="*" element={<PageNotFound/>} />
     </Routes>
   );
