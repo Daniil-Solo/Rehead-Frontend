@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import Carousel from "nuka-carousel";
 import { toast } from 'react-toastify';
@@ -7,12 +7,17 @@ import { Loader } from "../../components/loader/loader";
 import './content-generation-page.css';
 
 export const ContentGenerationPage: React.FC = () => {
+    const textInput = useRef<HTMLTextAreaElement>(null); 
     const fileInput = useRef<HTMLInputElement>(null); 
     const [imageSrc, setImageSrc] = useState('images/placeholder.jpg');
     const [text, setText] = useState("");
     const [removeBackground, setRemoveBackground] = useState(false);
     const [generateBackground, setGenerateBackground] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
+    useEffect(() => {
+        textInput.current?.focus();
+    }, [])
 
     const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) {
@@ -26,10 +31,7 @@ export const ContentGenerationPage: React.FC = () => {
     }
 
     const selectImage = () => {
-        if (fileInput.current === null){
-            return;
-        }
-        fileInput.current.click()
+        fileInput.current?.click()
     }
 
     const startGeneration = async () => {
@@ -42,6 +44,11 @@ export const ContentGenerationPage: React.FC = () => {
         if (text === ""){
             setIsLoading(false);
             toast.warning("Пожалуйста заполните поле характеристик товара");
+            return;
+        }
+        if (text.length > 300){
+            setIsLoading(false);
+            toast.warning("Текст характеристик должен быть меньше 500 символов");
             return;
         }
         const file = fileInput.current?.files[0];
@@ -97,7 +104,7 @@ export const ContentGenerationPage: React.FC = () => {
                             </div>
                         </div>
                         <div className="product__properties_column property">
-                            <textarea placeholder="Введите здесь характеристики товара" className="property__text" value={text} onChange={(e) => setText(e.target.value)}></textarea>
+                            <textarea placeholder="Введите здесь характеристики товара" className="property__text" maxLength={500} spellCheck={false} ref={textInput} value={text} onChange={(e) => setText(e.target.value)}></textarea>
                             <button className="property__remove-btn" onClick={(_) => setText("")}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                                     <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
@@ -133,7 +140,7 @@ export const ContentGenerationPage: React.FC = () => {
                         <div className="result__big-column carousel">
                             <Carousel cellAlign="center">
                                 <div className="carousel__image-container">
-                                    <img className="carousel__image" src='images/placeholder.jpg' />
+                                    <img className="carousel__image" src="images/placeholder.jpg" alt="Изображение для примера" />
                                 </div>
                             </Carousel>
                         </div>
