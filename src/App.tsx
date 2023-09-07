@@ -17,7 +17,11 @@ function App() {
           <ContentGenerationPage/>
         </WithAuth>
       } />
-      <Route path="/" element={<Navigate to="/content" replace/>} />
+      <Route path="/" element={
+        <WithAuth>
+          <Navigate to="/content" replace/>
+        </WithAuth>
+      } />
       <Route path="*" element={<PageNotFound/>} />
     </Routes>
   );
