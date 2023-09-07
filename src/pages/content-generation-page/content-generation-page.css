@@ -142,6 +142,7 @@
 .photo__img{
     min-height: 271px;
     border-radius: 16px;
+    background-color: #F4F4F2;
 }
 .photo__btn{
     font-size: 20px;
@@ -238,7 +239,7 @@
 }
 .carousel__image-container{
     padding: 8px;
-    height: 400px;
+    height: 512px;
 }
 .carousel__image{
     object-fit: cover;

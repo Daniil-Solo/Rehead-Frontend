@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import Carousel from "nuka-carousel";
 import { toast } from 'react-toastify';
-import {runGenerateContent} from './../../api/tasks'
+import { runGenerateContent, runCheckingStatus, runGetTaskResult } from './../../api/tasks'
 import { Loader } from "../../components/loader/loader";
 import './content-generation-page.css';
 
@@ -14,6 +14,11 @@ export const ContentGenerationPage: React.FC = () => {
     const [removeBackground, setRemoveBackground] = useState(false);
     const [generateBackground, setGenerateBackground] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [taskId, setTaskId] = useState<string|null>(null);
+    const [retryNumber, setRetryNumber] = useState(0);
+    const [isReadyResult, setIsReadyResult] = useState(false);
+    const [generatedText, setGeneratedText] = useState("");
+    const [generatedImages, setGeneratedImages] = useState<string[]>([]);
 
     useEffect(() => {
         textInput.current?.focus();
@@ -35,32 +40,66 @@ export const ContentGenerationPage: React.FC = () => {
     }
 
     const startGeneration = async () => {
-        setIsLoading(true);
         if (fileInput.current === null || fileInput.current.files === null || fileInput.current.files.length === 0){
-            setIsLoading(false);
             toast.warning("Пожалуйста загрузите изображение товара");
             return;
         }
         if (text === ""){
-            setIsLoading(false);
             toast.warning("Пожалуйста заполните поле характеристик товара");
             return;
         }
         if (text.length > 300){
-            setIsLoading(false);
             toast.warning("Текст характеристик должен быть меньше 500 символов");
             return;
         }
         const file = fileInput.current?.files[0];
         try{
-            const task_id = await runGenerateContent(file, text, removeBackground, generateBackground);
+            setIsLoading(true);
+            const currentTasktaskId = await runGenerateContent(file, text, removeBackground, generateBackground);
+            setTaskId(currentTasktaskId);
             toast.success("Генерация началась. Пожалуйста подождите");
         } catch(err){
             if (err instanceof Error){
                 toast.error(err.message);
             }
+            setIsLoading(false);
         }
     }
+
+    useEffect(() => {
+        if (taskId !== null){
+            setIsReadyResult(false);
+            const timer = setTimeout(() => {
+                runCheckingStatus(taskId)
+                .then((taskStatus) => {
+                    if (taskStatus.status !== "SUCCESS"){
+                        setRetryNumber(retryNumber+1);
+                    }
+                    runGetTaskResult(taskStatus.task_id)
+                    .then((taskResult) => {
+                        setGeneratedImages(taskResult.images);
+                        setGeneratedText(taskResult.text);
+                        setIsReadyResult(true);
+                        setIsLoading(false);
+                        toast.success("Генерация успешно завершена");
+                    })
+                    .catch((err)=>{
+                        if (err instanceof Error){
+                            setIsLoading(false);
+                            toast.error(err.message);
+                        }
+                    })
+                })
+                .catch((err)=>{
+                    if (err instanceof Error){
+                        setIsLoading(false);
+                        toast.error(err.message);
+                    }
+                })
+            }, 5000);
+            return () => clearInterval(timer);
+        }
+    }, [taskId, retryNumber]);
 
     return (
         <>
@@ -104,7 +143,7 @@ export const ContentGenerationPage: React.FC = () => {
                             </div>
                         </div>
                         <div className="product__properties_column property">
-                            <textarea placeholder="Введите здесь характеристики товара" className="property__text" maxLength={500} spellCheck={false} ref={textInput} value={text} onChange={(e) => setText(e.target.value)}></textarea>
+                            <textarea placeholder="Введите здесь характеристики товара" className="property__text" maxLength={1000} spellCheck={false} ref={textInput} value={text} onChange={(e) => setText(e.target.value)}></textarea>
                             <button className="property__remove-btn" onClick={(_) => setText("")}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                                     <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
@@ -123,29 +162,40 @@ export const ContentGenerationPage: React.FC = () => {
                             </button>
                         )
                     }
-                    <h3 className="main__subtitle">
-                        Результат генерации
-                    </h3>
-                    <div className="content-generation-page__result result">
-                        <div className="result__small-column content">
-                            <p className="content__text">
-                                Здесь будет сгенерированное описание...
-                            </p>
-                            <button className="content__copy-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                                    <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM4.5 9a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 1 0-1h4a.5.5 0 0 1 0 1h-4z"/>
-                                </svg>
-                            </button>
-                        </div>
-                        <div className="result__big-column carousel">
-                            <Carousel cellAlign="center">
-                                <div className="carousel__image-container">
-                                    <img className="carousel__image" src="images/placeholder.jpg" alt="Изображение для примера" />
+                    {
+                        !isReadyResult
+                        ? null
+                        : (
+                            <>  
+                                <h3 className="main__subtitle">
+                                    Результат генерации
+                                </h3>
+                                <div className="content-generation-page__result result">
+                                    <div className="result__small-column content">
+                                        <p className="content__text">
+                                            {generatedText}
+                                        </p>
+                                        <button className="content__copy-btn">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                                <path d="M9.293 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V4.707A1 1 0 0 0 13.707 4L10 .293A1 1 0 0 0 9.293 0zM9.5 3.5v-2l3 3h-2a1 1 0 0 1-1-1zM4.5 9a.5.5 0 0 1 0-1h7a.5.5 0 0 1 0 1h-7zM4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm.5 2.5a.5.5 0 0 1 0-1h4a.5.5 0 0 1 0 1h-4z"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    <div className="result__big-column carousel">
+                                        <Carousel cellAlign="center">
+                                            {
+                                                generatedImages.map(generatedImage => (
+                                                    <div className="carousel__image-container">
+                                                        <img className="carousel__image" src={'data:image/jpeg;base64,' + generatedImage} alt="Изображение для примера" />
+                                                    </div>
+                                                ))
+                                            }
+                                        </Carousel>
+                                    </div>
                                 </div>
-                            </Carousel>
-                        </div>
-                    </div>
-                    
+                            </>
+                        )
+                    }
                 </div>
             </main>
         </>
