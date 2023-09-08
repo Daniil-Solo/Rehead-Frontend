@@ -1,5 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState, useRef, useEffect, useContext } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import AuthContext from "../../auth/auth-provider";
+import { runLogout } from "../../api/auth";
 import Carousel from "nuka-carousel";
 import { toast } from 'react-toastify';
 import { runGenerateContent, runCheckingStatus, runGetTaskResult } from './../../api/tasks'
@@ -7,6 +9,8 @@ import { Loader } from "../../components/loader/loader";
 import './content-generation-page.css';
 
 export const ContentGenerationPage: React.FC = () => {
+    const { signout, auth } = useContext(AuthContext);
+    const navigate = useNavigate();
     const textInput = useRef<HTMLTextAreaElement>(null); 
     const fileInput = useRef<HTMLInputElement>(null); 
     const [imageSrc, setImageSrc] = useState('images/placeholder.jpg');
@@ -23,6 +27,23 @@ export const ContentGenerationPage: React.FC = () => {
     useEffect(() => {
         textInput.current?.focus();
     }, [])
+
+    const handleLogout = async () => {
+        try{
+            if (auth?.accessToken){
+                await runLogout(auth.accessToken);
+                if (signout !== undefined){
+                    toast.success("Выход выполнен успешно");
+                    signout();
+                    navigate("/");
+                }
+            }
+        } catch (err){
+            if (err instanceof Error){
+                toast.error(err.message);
+            }
+        }
+    }
 
     const handleImage = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) {
@@ -110,7 +131,7 @@ export const ContentGenerationPage: React.FC = () => {
                     </p>
                     <NavLink to="/content" className="header__link">Контент</NavLink>
                     <NavLink to="/analytics" className="header__link">Аналитика</NavLink>
-                    <button className="header__exit-btn exit-btn">
+                    <button className="header__exit-btn exit-btn" onClick={handleLogout}>
                         <svg className="exit-btn__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
                             <path fillRule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z"/>
                             <path fillRule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>

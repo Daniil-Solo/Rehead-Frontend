@@ -77,3 +77,30 @@ export const runRegister = async (login: string, password: string): Promise<stri
         throw Error(message);
     }
 }
+
+export const runLogout = async (accessToken: string): Promise<boolean> => {
+    try {
+        await axios.post(
+            LOGOUT_URL,
+            {},
+            {
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}` 
+                },
+                withCredentials: true
+            }
+        )
+        return true;
+    } catch (err){
+        let message = "";
+        if (!isAxiosError(err)) {
+            message = "Нет ответа от сервера";
+        } else if (err.response?.status === 401){
+            message = "Пользователь не авторизован"
+        } else {
+            message = "Возникла ошибка на сервере";
+        }
+        throw Error(message);
+    }
+}
