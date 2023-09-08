@@ -27,8 +27,8 @@ export const LoginForm: React.FC = () => {
         try{
             const accessToken = await runLogin(data.login, data.password);
             if (signin !== undefined){
-                toast.success("Вход выполнен успешно");
                 signin(accessToken);
+                toast.success("Вход выполнен успешно");
                 navigate("/");
             }
         } catch (err){

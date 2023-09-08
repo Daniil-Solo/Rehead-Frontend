@@ -38,8 +38,8 @@ export const ContentGenerationPage: React.FC = () => {
             if (auth?.accessToken){
                 await runLogout(auth.accessToken);
                 if (signout !== undefined){
-                    toast.success("Выход выполнен успешно");
                     signout();
+                    toast.success("Выход выполнен успешно");
                     navigate("/");
                 }
             }

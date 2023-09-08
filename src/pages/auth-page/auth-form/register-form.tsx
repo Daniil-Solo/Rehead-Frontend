@@ -28,8 +28,8 @@ export const RegisterForm: React.FC = () => {
         try{
             const accessToken = await runRegister(data.email, data.password);
             if (signin !== undefined){
-                toast.success("Регистрация выполнена успешно");
                 signin(accessToken);
+                toast.success("Регистрация выполнена успешно");
                 navigate("/");
             }
         } catch (err){

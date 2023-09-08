@@ -14,14 +14,13 @@ interface Auth {
 const AuthContext = createContext<{ auth?: Auth, signin?: (accessToken: string) => void, signout?: () => void }>({});
  
 export const AuthProvider = ({ children }: IAuthProvider) => {
-    const [auth, setAuth] = useState({accessToken: "", is_authentificated: false});
-    
-    useEffect(() => {
+    const [auth, setAuth] = useState(() => {
         const token = getToken();
-        if (token !== null && isExpired(token.timeStamp)){
-            setAuth({...auth, accessToken: token.value, is_authentificated: true});
-        }
-    }, [])
+        if (token !== null && isExpired(token.timeStamp))
+            return {accessToken: token.value, is_authentificated: true};
+        else
+            return {accessToken: "", is_authentificated: false};
+    })
     
     const signin = (accessToken: string) => {
         setToken(accessToken);
