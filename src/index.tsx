@@ -28,7 +28,7 @@ root.render(
       pauseOnFocusLoss
       draggable={false}
       pauseOnHover
-      theme="light"
+      theme="dark"
     />
   </React.StrictMode>
 );
