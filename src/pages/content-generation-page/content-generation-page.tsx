@@ -8,6 +8,11 @@ import { runGenerateContent, runCheckingStatus, runGetTaskResult } from './../..
 import { Loader } from "../../components/loader/loader";
 import './content-generation-page.css';
 
+interface TaskInfo{
+    celery_task_id: string,
+    db_task_id: string
+}
+
 export const ContentGenerationPage: React.FC = () => {
     const { signout, auth } = useContext(AuthContext);
     const navigate = useNavigate();
@@ -18,7 +23,7 @@ export const ContentGenerationPage: React.FC = () => {
     const [removeBackground, setRemoveBackground] = useState(false);
     const [generateBackground, setGenerateBackground] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [taskId, setTaskId] = useState<string|null>(null);
+    const [taskInfo, setTaskInfo] = useState<TaskInfo|null>(null);
     const [retryNumber, setRetryNumber] = useState(0);
     const [isReadyResult, setIsReadyResult] = useState(false);
     const [generatedText, setGeneratedText] = useState("");
@@ -76,8 +81,8 @@ export const ContentGenerationPage: React.FC = () => {
         const file = fileInput.current?.files[0];
         try{
             setIsLoading(true);
-            const currentTasktaskId = await runGenerateContent(file, text, removeBackground, generateBackground);
-            setTaskId(currentTasktaskId);
+            const currentTaskInfo = await runGenerateContent(file, text, removeBackground, generateBackground);
+            setTaskInfo(currentTaskInfo);
             toast.success("Генерация началась. Пожалуйста подождите");
         } catch(err){
             if (err instanceof Error){
@@ -88,15 +93,21 @@ export const ContentGenerationPage: React.FC = () => {
     }
 
     useEffect(() => {
-        if (taskId !== null){
+        if (taskInfo !== null){
             setIsReadyResult(false);
             const timer = setTimeout(() => {
-                runCheckingStatus(taskId)
+                runCheckingStatus(taskInfo.celery_task_id)
                 .then((taskStatus) => {
+                    if (taskStatus.status === "FAILURE"){
+                        toast.error("Во время выполнения генерации произошла ошибка");
+                        setIsLoading(false);
+                        return;
+                    }
                     if (taskStatus.status !== "SUCCESS"){
                         setRetryNumber(retryNumber+1);
+                        return;
                     }
-                    runGetTaskResult(taskStatus.task_id)
+                    runGetTaskResult(taskInfo.db_task_id)
                     .then((taskResult) => {
                         setGeneratedImages(taskResult.images);
                         setGeneratedText(taskResult.text);
@@ -120,7 +131,7 @@ export const ContentGenerationPage: React.FC = () => {
             }, 5000);
             return () => clearInterval(timer);
         }
-    }, [taskId, retryNumber]);
+    }, [taskInfo, retryNumber]);
 
     return (
         <>

@@ -5,9 +5,11 @@ const GENERATE_CONTENT_URL = "/tasks/generate_content";
 const CHECK_TASK_URL = "/tasks/check_status";
 const GET_TASK_RESULT_URL = "/tasks/get_result";
 
-
+interface TaskInfo{
+    celery_task_id: string,
+    db_task_id: string
+}
 interface TaskStatus{
-    task_id: string,
     status: string
 }
 interface TaskResult{
@@ -16,7 +18,7 @@ interface TaskResult{
 }
 
 
-export const runGenerateContent = async (file: File, text: string, removeBackground: boolean, generateBackground: boolean): Promise<string> => {
+export const runGenerateContent = async (file: File, text: string, removeBackground: boolean, generateBackground: boolean): Promise<TaskInfo> => {
     try {
         const params = new FormData();
         params.append('file', file);
@@ -33,8 +35,7 @@ export const runGenerateContent = async (file: File, text: string, removeBackgro
                 withCredentials: true
             }
         )
-        const task_id = response.data.task_id;
-        return task_id;
+        return response.data;
     } catch (err){
         let message = "";
         if (!isAxiosError(err)) {
