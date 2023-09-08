@@ -2,21 +2,12 @@
     height: 100%;
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
 }
-.auth-page__big_column{
-    background-repeat: no-repeat;
-    background-size: cover;
-    width: 60%;
-    height: 100%;
-    border-top-right-radius: 32px;
-    border-bottom-right-radius: 32px;
-}
-.auth-page__small_column{
-    width: 40%;
-    height: 100%;
-}
-.auth-background{
-    background-color: white;
+.auth-page__form{
+    padding: 16px;
+    border-radius: 32px;
     display: flex;
     flex-direction: column;
     justify-content: center;

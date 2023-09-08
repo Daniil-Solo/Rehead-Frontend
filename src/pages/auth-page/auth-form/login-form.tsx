@@ -73,7 +73,7 @@ export const LoginForm: React.FC = () => {
                 </div>
                 <p className="login-form__text">
                     <span>Нет аккаунта? </span>
-                    <Link to="/register">Зарегистрироваться</Link>
+                    <Link to="/register" className="login-form__link">Зарегистрироваться</Link>
                 </p>
             </form>
         </div>
