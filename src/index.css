@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,400,500,700');
 :root {
   --dark-text: #096088;
   --dark-blue: #1987bb;
@@ -6,6 +7,13 @@
   --dark-grey: #666;
   --light-grey: rgb(180, 184, 193);
   --red: red;
+
+  --new-dark-blue: #070E20;
+  --new-dark-blue-2: #181C35;
+  --new-white: #FCFAFB;
+  --new-dark-grey: #2B2A38;
+  --new-purple: #656DF4;
+  --new-purple-2: #8D5AFA;
 }
 
 
@@ -19,6 +27,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100vh;
+  background-color: var(--new-dark-grey);
 }
 
 #root{
