@@ -218,7 +218,7 @@ export const ContentGenerationPage: React.FC = () => {
                                             {
                                                 generatedImages.map(generatedImage => (
                                                     <div className="carousel__image-container">
-                                                        <img className="carousel__image" src={'data:image/jpeg;base64,' + generatedImage} alt="Изображение для примера" />
+                                                        <img className="carousel__image" src={generatedImage} alt="Изображение для примера" />
                                                     </div>
                                                 ))
                                             }
