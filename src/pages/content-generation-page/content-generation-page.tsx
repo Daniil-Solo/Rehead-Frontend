@@ -134,7 +134,7 @@ export const ContentGenerationPage: React.FC = () => {
     }, [taskInfo, retryNumber]);
 
     return (
-        <>
+        <div className="background" style={{backgroundImage: 'url(images/stars.jpg)'}}>
             <header className="header">
                 <div className="header__container">
                     <p className="header__logo">
@@ -142,15 +142,7 @@ export const ContentGenerationPage: React.FC = () => {
                     </p>
                     <NavLink to="/content" className="header__link">Контент</NavLink>
                     <NavLink to="/analytics" className="header__link">Аналитика</NavLink>
-                    <button className="header__exit-btn exit-btn" onClick={handleLogout}>
-                        <svg className="exit-btn__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 16 16" fill="currentColor">
-                            <path fillRule="evenodd" d="M6 12.5a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v2a.5.5 0 0 1-1 0v-2A1.5 1.5 0 0 1 6.5 2h8A1.5 1.5 0 0 1 16 3.5v9a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 5 12.5v-2a.5.5 0 0 1 1 0v2z"/>
-                            <path fillRule="evenodd" d="M.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L1.707 7.5H10.5a.5.5 0 0 1 0 1H1.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z"/>
-                        </svg>
-                        <span className="exit-btn__text">
-                            Выйти
-                        </span>
-                    </button>
+                    <button className="exit-btn header__link " onClick={handleLogout}>Выйти</button>
                 </div>
             </header>
             <main className="main">
@@ -173,9 +165,20 @@ export const ContentGenerationPage: React.FC = () => {
                                 <input type="checkbox" className="check-item__checkbox" id="generate-back-check" checked={generateBackground} onChange={(e) => setGenerateBackground(e.target.checked)}/>
                                 <label className="check-item__label" htmlFor="generate-back-check">Сгенерировать фон</label>
                             </div>
+                            {
+                                isLoading
+                                ? (
+                                    <div className="main__generate-btn" style={{width: "232px", display: "flex", justifyContent: "center"}}><Loader/></div>
+                                )
+                                : (
+                                    <button className="main__generate-btn btn btn-2" onClick={startGeneration}>
+                                        Сгенерерировать
+                                    </button>
+                                )
+                            }
                         </div>
                         <div className="product__properties_column property">
-                            <textarea placeholder="Введите здесь характеристики товара" className="property__text" maxLength={1000} spellCheck={false} ref={textInput} value={text} onChange={(e) => setText(e.target.value)}></textarea>
+                            <textarea placeholder="Введите характеристики товара.." className="property__text" maxLength={1000} spellCheck={false} ref={textInput} value={text} onChange={(e) => setText(e.target.value)}></textarea>
                             <button className="property__remove-btn" onClick={(_) => setText("")}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
                                     <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
@@ -183,17 +186,6 @@ export const ContentGenerationPage: React.FC = () => {
                             </button>
                         </div>
                     </div>
-                    {
-                        isLoading
-                        ? (
-                            <div className="main__generate-btn" style={{width: "232px", display: "flex", justifyContent: "center"}}><Loader/></div>
-                        )
-                        : (
-                            <button className="main__generate-btn btn btn-2" onClick={startGeneration}>
-                                Сгенерерировать
-                            </button>
-                        )
-                    }
                     {
                         !isReadyResult
                         ? null
@@ -230,6 +222,6 @@ export const ContentGenerationPage: React.FC = () => {
                     }
                 </div>
             </main>
-        </>
+        </div>
     )
 }
