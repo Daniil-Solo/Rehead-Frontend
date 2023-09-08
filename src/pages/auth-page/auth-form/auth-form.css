@@ -40,7 +40,7 @@
 
 .form-input__input{
     align-self: center;
-    width: 450px;
+    width: 420px;
     border-radius: 4px;
     font-size: 18px;
     padding: 4px;
@@ -109,7 +109,7 @@
 .input{
     color: var(--new-white);
     font-family: inherit; 
-    font-size: 32px; 
+    font-size: 26px; 
     font-weight: 400;
     line-height: inherit; 
     padding: 12px;
