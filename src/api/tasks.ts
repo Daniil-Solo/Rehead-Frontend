@@ -3,17 +3,21 @@ import axios from "./axios";
 
 const GENERATE_CONTENT_URL = "/tasks/generate_content";
 const CHECK_TASK_URL = "/tasks/check_status";
-const GET_TASK_RESULT_URL = "/tasks/get_result";
+const GET_DESCRIPTION_RESULT_URL = "/tasks/get_description_result";
+const GET_IMAGES_RESULT_URL = "/tasks/get_images_result";
 
-interface TaskInfo{
-    celery_task_id: string,
+export interface TaskInfo{
+    celery_image_task_id: string,
+    celery_description_task_id: string,
     db_task_id: string
 }
 interface TaskStatus{
     status: string
 }
-interface TaskResult{
-    text: string,
+interface TaskDescriptionResult{
+    text: string
+}
+interface TaskImagesResult{
     images: string[]
 }
 
@@ -74,10 +78,35 @@ export const runCheckingStatus = async (taskId: string): Promise<TaskStatus> => 
     }
 }
 
-export const runGetTaskResult = async (resultTaskId: string): Promise<TaskResult> => {
+export const runGetDescriptionResult = async (resultTaskId: string): Promise<TaskDescriptionResult> => {
     try {
         const response = await axios.get(
-            GET_TASK_RESULT_URL,
+            GET_DESCRIPTION_RESULT_URL,
+            {
+                params: {
+                    result_task_id: resultTaskId
+                },
+                withCredentials: true
+            }
+        )
+        return response.data;
+    } catch (err){
+        let message = "";
+        if (!isAxiosError(err)) {
+            message = "Нет ответа от сервера";
+        } else if (err.response?.status === 422){
+            message = "Не передан идентификатор задачи";
+        } else {
+            message = "Возникла ошибка на сервере";
+        }
+        throw Error(message);
+    }
+}
+
+export const runGetImagesResult = async (resultTaskId: string): Promise<TaskImagesResult> => {
+    try {
+        const response = await axios.get(
+            GET_IMAGES_RESULT_URL,
             {
                 params: {
                     result_task_id: resultTaskId
