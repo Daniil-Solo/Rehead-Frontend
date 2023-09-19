@@ -4,7 +4,7 @@ type StoredToken = {
   };
   
   const TOKEN_KEY = 'access_token';
-  const TOKEN_TTL_MS = 3600;
+  const TOKEN_TTL_MS = 3 * 60 * 1000;
   
   const isExpired = (timeStamp?: number): boolean => {
     if (!timeStamp) return false;

@@ -16,7 +16,7 @@ const AuthContext = createContext<{ auth?: Auth, signin?: (accessToken: string) 
 export const AuthProvider = ({ children }: IAuthProvider) => {
     const [auth, setAuth] = useState(() => {
         const token = getToken();
-        if (token !== null && isExpired(token.timeStamp))
+        if (token !== null && !isExpired(token.timeStamp))
             return {accessToken: token.value, is_authentificated: true};
         else
             return {accessToken: "", is_authentificated: false};
