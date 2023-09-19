@@ -4,14 +4,9 @@ import AuthContext from "../../auth/auth-provider";
 import { runLogout } from "../../api/auth";
 import Carousel from "nuka-carousel";
 import { toast } from 'react-toastify';
-import { runGenerateContent, runCheckingStatus, runGetTaskResult } from './../../api/tasks'
+import { runGenerateContent, runCheckingStatus, runGetDescriptionResult, runGetImagesResult, TaskInfo } from './../../api/tasks'
 import { Loader } from "../../components/loader/loader";
 import './content-generation-page.css';
-
-interface TaskInfo{
-    celery_task_id: string,
-    db_task_id: string
-}
 
 export const ContentGenerationPage: React.FC = () => {
     const { signout, auth } = useContext(AuthContext);
@@ -24,7 +19,8 @@ export const ContentGenerationPage: React.FC = () => {
     const [generateBackground, setGenerateBackground] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [taskInfo, setTaskInfo] = useState<TaskInfo|null>(null);
-    const [retryNumber, setRetryNumber] = useState(0);
+    const [imagesRetryNumber, setImagesRetryNumber] = useState(0);
+    const [descriptionRetryNumber, setDescriptionRetryNumber] = useState(0);
     const [isReadyResult, setIsReadyResult] = useState(false);
     const [generatedText, setGeneratedText] = useState("");
     const [generatedImages, setGeneratedImages] = useState<string[]>([]);
@@ -99,26 +95,59 @@ export const ContentGenerationPage: React.FC = () => {
 
     useEffect(() => {
         if (taskInfo !== null){
-            setIsReadyResult(false);
             const timer = setTimeout(() => {
-                runCheckingStatus(taskInfo.celery_task_id)
+                runCheckingStatus(taskInfo.celery_description_task_id)
                 .then((taskStatus) => {
                     if (taskStatus.status === "FAILURE"){
-                        toast.error("Во время выполнения генерации произошла ошибка");
+                        toast.error("Во время выполнения генерации описания произошла ошибка");
+                        return;
+                    }
+                    if (taskStatus.status !== "SUCCESS"){
+                        setDescriptionRetryNumber(descriptionRetryNumber+1);
+                        return;
+                    }
+                    runGetDescriptionResult(taskInfo.db_task_id)
+                    .then((taskResult) => {
+                        setGeneratedText(taskResult.text);
+                        toast.success("Генерация описания успешно завершена");
+                    })
+                    .catch((err)=>{
+                        if (err instanceof Error){
+                            toast.error(err.message);
+                        }
+                    })
+                })
+                .catch((err)=>{
+                    if (err instanceof Error){
+                        toast.error(err.message);
+                    }
+                })
+            }, 5000);
+            return () => clearInterval(timer);
+        }
+    }, [taskInfo, descriptionRetryNumber]);
+
+    useEffect(() => {
+        if (taskInfo !== null){
+            setIsReadyResult(false);
+            const timer = setTimeout(() => {
+                runCheckingStatus(taskInfo.celery_image_task_id)
+                .then((taskStatus) => {
+                    if (taskStatus.status === "FAILURE"){
+                        toast.error("Во время выполнения генерации изображений произошла ошибка");
                         setIsLoading(false);
                         return;
                     }
                     if (taskStatus.status !== "SUCCESS"){
-                        setRetryNumber(retryNumber+1);
+                        setImagesRetryNumber(imagesRetryNumber+1);
                         return;
                     }
-                    runGetTaskResult(taskInfo.db_task_id)
+                    runGetImagesResult(taskInfo.db_task_id)
                     .then((taskResult) => {
                         setGeneratedImages(taskResult.images);
-                        setGeneratedText(taskResult.text);
                         setIsReadyResult(true);
                         setIsLoading(false);
-                        toast.success("Генерация успешно завершена");
+                        toast.success("Генерация изображений успешно завершена");
                     })
                     .catch((err)=>{
                         if (err instanceof Error){
@@ -136,7 +165,7 @@ export const ContentGenerationPage: React.FC = () => {
             }, 5000);
             return () => clearInterval(timer);
         }
-    }, [taskInfo, retryNumber]);
+    }, [taskInfo, imagesRetryNumber]);
 
     return (
         <div className="background">
