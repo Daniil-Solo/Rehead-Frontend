@@ -1,0 +1,47 @@
+.select{
+    position: relative;
+    width: 100%;
+}
+.select__header{
+    background: var(--new-purple);
+    background: linear-gradient(90deg, var(--new-purple) 0%, var(--new-purple-2) 100%);
+    color: var(--new-white);
+    border-radius: 12px;
+    padding: 12px 32px;
+    font-size: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+}
+.select__options{
+    position: absolute;
+    width: 100%;
+    max-height: 0;
+    overflow: hidden;
+}
+.select__options_opened{
+    margin-top: 8px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+.item{
+    background-color: var(--new-dark-grey);
+    color: var(--new-white);
+    font-size: 24px;
+    padding: 4px 16px;
+    cursor: pointer;
+}
+.item:hover, .item_active{
+    background-color: var(--new-purple);
+    transition: background-color 0.5s;
+}
+.select__icon {
+    transform: scale(1, 1);
+    transition: transform 0.5s;
+}
+.select__icon_rotated {
+    transform: scale(1, -1);
+    transition: transform 0.5s;
+}
