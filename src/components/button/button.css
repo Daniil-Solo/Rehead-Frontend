@@ -1,0 +1,26 @@
+.btn {
+	outline: none;
+	border: none;  
+    padding: 12px 32px;
+	border-radius: 12px;
+    background: var(--new-purple);
+    background: linear-gradient(90deg, var(--new-purple) 0%, var(--new-purple-2) 100%);
+	font-family: inherit; 
+    font-size: 28px;
+	font-weight: 500;
+	text-decoration: none;
+	color: var(--new-white);
+	cursor: pointer;
+}
+.btn:hover {
+	background: linear-gradient(90deg, var(--new-purple-2) 0%, var(--new-purple) 100%);
+    transition: 1s;
+}
+.btn:active {
+	transform: scale(0.96);
+    transition: 1s;
+}
+.btn:disabled {
+	pointer-events: none;
+	opacity: 0.65;
+}
