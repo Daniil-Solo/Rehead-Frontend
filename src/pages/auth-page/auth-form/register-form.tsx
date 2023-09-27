@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import AuthContext from "../../../auth/auth-provider";
 import { runRegister } from "../../../api/auth";
 import { Loader } from "../../../components/loader/loader";
+import { Button } from "../../../components/button/button";
 import './auth-form.css';
 
 export interface IRegisterFields {
@@ -75,11 +76,7 @@ export const RegisterForm: React.FC = () => {
                     {
                         isLoading
                         ? <Loader/>
-                        : (
-                            <button type="submit" className="submit__btn btn">
-                                Создать аккаунт
-                            </button>
-                        )
+                        : <Button title="Создать аккаунт" className="submit__btn" isSubmit={true} />
                     }
                 </div>
                 <p className="login-form__text">

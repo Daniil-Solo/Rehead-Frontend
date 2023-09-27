@@ -6,6 +6,7 @@ import Carousel from "nuka-carousel";
 import { toast } from 'react-toastify';
 import { runGenerateContent, runCheckingStatus, runGetDescriptionResult, runGetImagesResult, TaskInfo } from './../../api/tasks'
 import { Loader } from "../../components/loader/loader";
+import { Button } from "../../components/button/button";
 import './content-generation-page.css';
 
 export const ContentGenerationPage: React.FC = () => {
@@ -189,9 +190,7 @@ export const ContentGenerationPage: React.FC = () => {
                         <div className="product__photo_column photo">
                             <img className="photo__img" src={imageSrc} alt="Изображение товара" />
                             <input style={{display: "none"}} type="file" accept="image/*" ref={fileInput} onChange={handleImage}/>
-                            <button className="photo__btn btn" onClick={selectImage}>
-                                Загрузить изображение
-                            </button>
+                            <Button title="Загрузить изображение" className="photo__btn" onClick={selectImage}/>
                             <div className="photo__check check-item">
                                 <input type="checkbox" className="check-item__checkbox" id="remove-back-check" checked={removeBackground} onChange={(e) => setRemoveBackground(e.target.checked)}/>
                                 <label className="check-item__label" htmlFor="remove-back-check">Удалить фон</label>
@@ -206,9 +205,7 @@ export const ContentGenerationPage: React.FC = () => {
                                     <div className="main__generate-btn" style={{width: "232px", display: "flex", justifyContent: "center"}}><Loader/></div>
                                 )
                                 : (
-                                    <button className="main__generate-btn btn btn-2" onClick={startGeneration}>
-                                        Сгенерерировать
-                                    </button>
+                                    <Button title="Сгенерерировать" className="main__generate-btn" onClick={startGeneration}/>
                                 )
                             }
                         </div>

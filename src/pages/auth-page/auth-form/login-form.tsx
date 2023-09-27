@@ -6,6 +6,7 @@ import AuthContext from "../../../auth/auth-provider";
 import { runLogin } from "../../../api/auth";
 import { Loader } from "../../../components/loader/loader";
 import './auth-form.css';
+import { Button } from "../../../components/button/button";
 
 export interface ILoginFields {
     login: string,
@@ -64,11 +65,7 @@ export const LoginForm: React.FC = () => {
                     {
                         isLoading
                         ? <Loader/>
-                        : (
-                            <button type="submit" className="submit__btn btn">
-                                Войти
-                            </button>
-                        )
+                        : <Button title="Войти" className="submit__btn" isSubmit={true} />
                     }
                 </div>
                 <p className="login-form__text">
