@@ -177,9 +177,18 @@
     flex-direction: row;
     gap: 12px;
 }
-.property{
+.property__text-container{
     position: relative;
-    align-items: stretch;
+    flex-grow: 1;
+}
+.property{
+    display: flex;
+    flex-direction: column;
+}
+.property__categories{
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
 }
 .property__text{
     box-sizing: border-box;

@@ -8,6 +8,8 @@ import { runGenerateContent, runCheckingStatus, runGetDescriptionResult, runGetI
 import { Loader } from "../../components/loader/loader";
 import { Button } from "../../components/button/button";
 import { Checkbox } from "../../components/checkbox/checkbox";
+import { Select } from "../../components/select/select";
+import { Option } from "../../components/select/types";
 import './content-generation-page.css';
 
 export const ContentGenerationPage: React.FC = () => {
@@ -26,10 +28,66 @@ export const ContentGenerationPage: React.FC = () => {
     const [isReadyResult, setIsReadyResult] = useState(false);
     const [generatedText, setGeneratedText] = useState("");
     const [generatedImages, setGeneratedImages] = useState<string[]>([]);
+    const [currentCategory, setCurrentCategory] = useState<Option|null>(null);
+    const [currentSubCategory, setCurrentSubCategory] = useState<Option|null>(null);
+    const [subCategories, setSubCategories] = useState<Option[]>([]);
+    const categoryData = [
+        {
+            name: "Электроника",
+            items: [
+                {
+                    name: "Ноутбук"
+                },
+                {
+                    name: "Смартфон"
+                },
+                {
+                    name: "Кофеварка"
+                },
+            ]
+        },
+        {
+            name: "Одежда",
+            items: [
+                {
+                    name: "Джинсы"
+                },
+                {
+                    name: "Платье"
+                },
+                {
+                    name: "Футболка"
+                },
+            ]
+        },
+        {
+            name: "Игрушки",
+            items: [
+                {
+                    name: "Мягкая игрушка"
+                },
+                {
+                    name: "Пластилин"
+                },
+                {
+                    name: "Пазл"
+                },
+            ]
+        }
+    ]
 
     useEffect(() => {
         textInput.current?.focus();
     }, [])
+
+    useEffect(() => {
+        categoryData.forEach(category => {
+            if (category.name === currentCategory?.name){
+                setSubCategories(category.items);
+                setCurrentSubCategory(null);
+            }
+        })
+    }, [currentCategory])
 
     const handleLogout = async () => {
         try{
@@ -205,12 +263,18 @@ export const ContentGenerationPage: React.FC = () => {
                             }
                         </div>
                         <div className="product__properties_column property">
-                            <textarea placeholder="Введите характеристики товара.." className="property__text" maxLength={1000} spellCheck={false} ref={textInput} value={text} onChange={(e) => setText(e.target.value)}></textarea>
-                            <button className="property__remove-btn" onClick={(_) => setText("")}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                                    <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
-                                </svg>
-                            </button>
+                            <div className="property__categories">
+                                <Select initialText="Категория" currentOption={currentCategory} setCurrentOption={setCurrentCategory} options={categoryData}/>
+                                <Select initialText="Подкатегория" currentOption={currentSubCategory} setCurrentOption={setCurrentSubCategory} options={subCategories}/>
+                            </div>
+                            <div className="property__text-container">
+                                <textarea placeholder="Введите характеристики товара.." className="property__text" maxLength={1000} spellCheck={false} ref={textInput} value={text} onChange={(e) => setText(e.target.value)}></textarea>
+                                <button className="property__remove-btn" onClick={(_) => setText("")}>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M11 1.5v1h3.5a.5.5 0 0 1 0 1h-.538l-.853 10.66A2 2 0 0 1 11.115 16h-6.23a2 2 0 0 1-1.994-1.84L2.038 3.5H1.5a.5.5 0 0 1 0-1H5v-1A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5Zm-5 0v1h4v-1a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5ZM4.5 5.029l.5 8.5a.5.5 0 1 0 .998-.06l-.5-8.5a.5.5 0 1 0-.998.06Zm6.53-.528a.5.5 0 0 0-.528.47l-.5 8.5a.5.5 0 0 0 .998.058l.5-8.5a.5.5 0 0 0-.47-.528ZM8 4.5a.5.5 0 0 0-.5.5v8.5a.5.5 0 0 0 1 0V5a.5.5 0 0 0-.5-.5Z"/>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                     {
